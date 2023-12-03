@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { signInUser } from "../../utilities/fetch";
+import { useNavigate } from "react-router-dom";
 import "./index.css";
 
 const SignIn = () => {
@@ -7,15 +8,34 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  const navigateTo = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
     // Perform sign-in logic here
   };
-  useEffect(() => {
+  const getUsers = async () => {
     if (submitted) {
-      signInUser(email, password);
+      const response = await signInUser(email, password);
+      switch (response.userType) {
+        case "Admin":
+          navigateTo("/admin");
+          break;
+        case "Doctor":
+          navigateTo("/doctor");
+          break;
+        case "Patient":
+          navigateTo("/patient");
+          break;
+        default:
+          console.log("error");
+          break;
+      }
     }
+  };
+  useEffect(() => {
+    getUsers();
   }, [submitted]);
 
   return (

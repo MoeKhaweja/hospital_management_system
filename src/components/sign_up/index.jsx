@@ -19,6 +19,13 @@ const SignUp = () => {
   useEffect(() => {
     if (submitted) {
       signUpUser(email, password, userType, name, gender, phoneNumber);
+      setSubmitted(false);
+      setEmail("");
+      setPassword("");
+      setUserType("");
+      setName("");
+      setGender("");
+      setPhoneNumber("");
     }
   }, [submitted]);
 

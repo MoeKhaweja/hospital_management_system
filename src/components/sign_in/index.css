@@ -5,18 +5,18 @@
   width: 400px;
 }
 
-input[type="text"],
-input[type="password"] {
+.sign-in-form input[type="text"],
+.sign-in-form input[type="password"] {
   display: flex;
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-input {
+.sign-in-form input {
   margin-bottom: 10px;
 }
-button {
+.sign-in-form button {
   width: 100%;
   padding: 10px 20px;
   background-color: #007bff;
@@ -28,6 +28,6 @@ button {
   margin-top: 10px;
 }
 
-button:hover {
+.sign-in-form button:hover {
   background-color: #0056b3;
 }
