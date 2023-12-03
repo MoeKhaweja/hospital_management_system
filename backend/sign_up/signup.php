@@ -1,8 +1,8 @@
 <?php
 // FILEPATH: /C:/xampp/htdocs/hospital_management_system/backend/signup.php
-include("connection.php");
-include("key.php");
-require_once('vendor/autoload.php'); // Include the JWT library
+include("../connection.php"); // Include your database connection file
+include("../key.php");
+require_once('../vendor/autoload.php'); // Include the JWT library
 
 use Firebase\JWT\JWT;
 

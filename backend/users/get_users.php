@@ -1,5 +1,5 @@
 <?php
-include("connection.php");
+include("../connection.php"); // Include your database connection file
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Check if data is received and set variables
@@ -10,8 +10,18 @@ if (isset($data['userType'])) {
 else{
     $userType=$_POST['userType'];
 }
+if($userType=="Patient"){
 // Query to get all users
-$query=$conn->prepare('select id,name,email,gender,phone from users where role=?');
+$query=$conn->prepare('SELECT u.id, u.name, u.email, u.gender, u.phone, p.room_number
+FROM users u
+INNER JOIN patients p ON u.id = p.patient_id
+WHERE u.role = ?
+'
+);}
+else{
+    $query=$conn->prepare('SELECT u.id, u.name, u.email, u.gender, u.phone
+FROM users u WHERE u.role = ?');
+}
 $query->bind_param('s',$userType);
 $query->execute();
 $array=$query->get_result();

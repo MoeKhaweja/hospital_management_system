@@ -12,7 +12,7 @@ export const signUpUser = async (
   phoneNumber
 ) => {
   try {
-    const response = await axios.post(`${API_URL}/signup.php`, {
+    const response = await axios.post(`${API_URL}/sign_up/signup.php`, {
       email,
       password,
       userType,
@@ -34,7 +34,7 @@ export const signUpUser = async (
 // Function to sign in with username and password
 export const signInUser = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/signin.php`, {
+    const response = await axios.post(`${API_URL}/sign_up/signin.php`, {
       email,
       password,
     });
@@ -46,7 +46,7 @@ export const signInUser = async (email, password) => {
 
 export const getUsers = async (userType) => {
   try {
-    const response = await axios.post(`${API_URL}/get_users.php`, {
+    const response = await axios.post(`${API_URL}/users/get_users.php`, {
       userType,
     });
     return response.data;
@@ -57,7 +57,7 @@ export const getUsers = async (userType) => {
 
 export const updateUser = async (id, email, gender, name, phoneNumber) => {
   try {
-    const response = await axios.post(`${API_URL}/update_user.php`, {
+    const response = await axios.post(`${API_URL}/users/update_user.php`, {
       id,
       email,
       gender,
@@ -73,8 +73,81 @@ export const updateUser = async (id, email, gender, name, phoneNumber) => {
 
 export const deleteUser = async (id) => {
   try {
-    const response = await axios.post(`${API_URL}/delete_user.php`, {
+    const response = await axios.post(`${API_URL}/users/delete_user.php`, {
       id,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const addAdminRoom = async (room_name, room_status) => {
+  try {
+    const response = await axios.post(`${API_URL}/rooms/add_room.php`, {
+      room_name,
+      room_status,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const getAdminRooms = async (room_status) => {
+  try {
+    const response = await axios.post(`${API_URL}/rooms/get_rooms.php`, {
+      room_status,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const deleteAdminRooms = async (room_id) => {
+  try {
+    const response = await axios.post(`${API_URL}/rooms/delete_room.php`, {
+      room_id,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+export const deleteFreeRoom = async (room_id) => {
+  try {
+    const response = await axios.post(`${API_URL}/rooms/delete_free_room.php`, {
+      room_id,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const updatePatientRoom = async (room_number, patient_id) => {
+  try {
+    const response = await axios.post(`${API_URL}/patients/update_room.php`, {
+      room_number,
+      patient_id,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+export const updateRoomName = async (room_id, room_name) => {
+  try {
+    const response = await axios.post(`${API_URL}/rooms/update_room_name.php`, {
+      room_id,
+      room_name,
     });
     console.log(response.data);
     return response.data;

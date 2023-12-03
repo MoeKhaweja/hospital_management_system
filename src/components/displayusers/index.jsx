@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { deleteUser, updateUser } from "../../utilities/fetch";
+import {
+  deleteUser,
+  updatePatientRoom,
+  updateUser,
+} from "../../utilities/fetch";
 
-const DisplayUsers = ({ users, getAllUsers }) => {
+const DisplayUsers = ({ users, getAllUsers, usersType }) => {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [gender, setGender] = useState();
   const [phone, setPhone] = useState();
+  const [roomNumber, setRoomNumber] = useState();
 
   const [editableRowId, setEditableRowId] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -22,6 +27,9 @@ const DisplayUsers = ({ users, getAllUsers }) => {
     console.log(userId, name, email, gender, phone);
     setEditableRowId(null);
     await updateUser(userId, email, gender, name, phone);
+    if (usersType == "Patient") {
+      await updatePatientRoom(roomNumber, userId);
+    }
     getAllUsers();
   };
   const handleDelete = async (userId) => {
@@ -45,15 +53,28 @@ const DisplayUsers = ({ users, getAllUsers }) => {
   return (
     <table>
       <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Gender</th>
-          <th>Phone</th>
-          <th>Actions</th>
-        </tr>
+        {usersType != "Patient" ? (
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        ) : (
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Room ID</th>
+            <th>Actions</th>
+          </tr>
+        )}
       </thead>
+
       <tbody>
         {users.map((user) => (
           <tr key={user.id}>
@@ -117,6 +138,21 @@ const DisplayUsers = ({ users, getAllUsers }) => {
                 user.phone
               )}
             </td>
+            {usersType != "Patient" ? (
+              <></>
+            ) : (
+              <td>
+                {editableRowId === user.id ? (
+                  <input
+                    type="text"
+                    defaultValue={user.room_number}
+                    onChange={(e) => setRoomNumber(e.target.value)}
+                  />
+                ) : (
+                  user.room_number
+                )}
+              </td>
+            )}
             <td>
               {editableRowId === user.id ? (
                 <>

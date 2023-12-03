@@ -1,5 +1,5 @@
 <?php
-require_once 'connection.php';
+include("../connection.php"); // Include your database connection file
 // Receive JSON data from the request body
 $data = json_decode(file_get_contents("php://input"), true);
 

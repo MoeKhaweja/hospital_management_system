@@ -1,5 +1,5 @@
 <?php
-include("connection.php");
+include("../connection.php"); // Include your database connection file
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Check if data is received and set variables
