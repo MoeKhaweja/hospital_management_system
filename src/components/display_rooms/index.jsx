@@ -6,27 +6,35 @@ import {
   deleteFreeRoom,
 } from "../../utilities/fetch";
 import "./index.css";
+// import { useDispatch } from "react-redux";
+// import { roomActions } from "../../store/rooms_slice";
 
-const DisplayRooms = ({ status }) => {
+const DisplayRooms = ({ status, reload }) => {
   const [roomName, setRoomName] = useState("");
   const [editableRowId, setEditableRowId] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [saveRooms, setSaveRooms] = useState(null);
-  const [changeRooms, setChangeRooms] = useState(0);
+  const [rerenderCount, setRerenderCount] = useState(0);
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      setRooms(await getAdminRooms(status));
-      console.log(changeRooms);
-    };
-    fetchRooms();
-  }, [changeRooms, status]);
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     if (saveRooms) {
       updateRoomName(saveRooms.roomId, saveRooms.roomName);
+      setRerenderCount((prevCount) => prevCount + 1);
+      console.log("room save");
     }
   }, [saveRooms]);
+
+  useEffect(() => {
+    fetchRooms();
+    console.log("refetch");
+  }, [rerenderCount]);
+
+  const fetchRooms = async () => {
+    const r = await getAdminRooms(status);
+    setRooms(r);
+  };
 
   const handleEdit = (room) => {
     setRoomName(room.room_name);
@@ -36,16 +44,21 @@ const DisplayRooms = ({ status }) => {
   const handleSave = async (roomId) => {
     setSaveRooms({ roomId: roomId, roomName: roomName });
     setEditableRowId(null);
-    setChangeRooms(changeRooms + 1);
   };
 
   const handleFreeUp = async (roomId) => {
     await deleteAdminRooms(roomId);
-    setChangeRooms(changeRooms + 1); // Fetch rooms again to update the list
+    setRerenderCount((prevCount) => prevCount + 1);
+    console.log("room free");
+    // dispatch(roomActions.reloadRooms());
+    reload();
   };
   const handleDelete = async (roomId) => {
     await deleteFreeRoom(roomId);
-    setChangeRooms(changeRooms + 1); // Fetch rooms again to update the list
+    setRerenderCount((prevCount) => prevCount + 1);
+    console.log("room delete");
+    // dispatch(roomActions.reloadRooms());
+    reload();
   };
 
   return (
@@ -65,6 +78,7 @@ const DisplayRooms = ({ status }) => {
             <td>
               {editableRowId === room.room_id ? (
                 <input
+                  name="room_name"
                   type="text"
                   defaultValue={room.room_name}
                   onChange={(e) => setRoomName(e.target.value)}

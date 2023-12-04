@@ -1,34 +1,13 @@
 import { useState } from "react";
+import { getPatients } from "../../utilities/fetch";
+import DisplayPatients from "../../components/display_patients";
 
 function Doctor() {
-  const [patients, setPatients] = useState([]);
-  const [medications, setMedications] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-
-  // View patient records
-  const viewPatientRecords = (patient) => {
-    /*...*/
-  };
-
-  // Prescribe medications
-  const prescribeMedication = (patient, medication) => {
-    /*...*/
-  };
-
-  // Manage appointments
-  const addAppointment = (appointment) => {
-    /*...*/
-  };
-  const updateAppointment = (appointment) => {
-    /*...*/
-  };
-  const deleteAppointment = (appointment) => {
-    /*...*/
-  };
+  getPatients();
 
   return (
     <div>
-      {/* UI for viewing patient records, prescribing medications, and managing appointments */}
+      <DisplayPatients></DisplayPatients>
     </div>
   );
 }

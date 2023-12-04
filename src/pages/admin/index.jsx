@@ -12,8 +12,6 @@ function Admin() {
   const getAllUsers = async () => {
     const doctors = await getUsers("Doctor");
     const patients = await getUsers("Patient");
-    console.log(doctors);
-    console.log(patients);
     setDoctors(doctors);
     setPatients(patients);
   };

@@ -2,6 +2,37 @@ import axios from "axios";
 
 const API_URL = "http://localhost/hospital_management_system/backend";
 
+// const post = async ({ route, body }) => {
+//   try {
+//     const response = await axios.post(`${API_URL}${route}.php`, body);
+
+//     return response.data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+// export const signUpUser = async (
+//   email,
+//   password,
+//   userType,
+//   name,
+//   gender,
+//   phoneNumber
+// ) => {
+//   post({
+//     route: "/sign_up/signup",
+//     body: {
+//       email,
+//       password,
+//       userType,
+//       name,
+//       gender,
+//       phoneNumber,
+//     },
+//   });
+// };
+
 // Function to sign up with username, password, and user role
 export const signUpUser = async (
   email,
@@ -32,6 +63,7 @@ export const signUpUser = async (
 };
 
 // Function to sign in with username and password
+
 export const signInUser = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/sign_up/signin.php`, {
@@ -101,7 +133,6 @@ export const getAdminRooms = async (room_status) => {
     const response = await axios.post(`${API_URL}/rooms/get_rooms.php`, {
       room_status,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -137,7 +168,6 @@ export const updatePatientRoom = async (room_number, patient_id) => {
       room_number,
       patient_id,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -149,7 +179,60 @@ export const updateRoomName = async (room_id, room_name) => {
       room_id,
       room_name,
     });
-    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const getPatients = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/doctors/get_patients.php`, {});
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const prescribeMedication = async (patient_id, diagnosis) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/doctors/assign_medications.php`,
+      {
+        patient_id,
+        diagnosis,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const assignToPatient = async (patient_id, assigned_dr) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/doctors/assign_to_patient.php`,
+      {
+        patient_id,
+        assigned_dr,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const unAssignToPatient = async (patient_id) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/doctors/unassign_to_patient.php`,
+      {
+        patient_id,
+      }
+    );
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);

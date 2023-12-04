@@ -18,6 +18,7 @@ const SignIn = () => {
   const getUsers = async () => {
     if (submitted) {
       const response = await signInUser(email, password);
+      localStorage.setItem("userId", response.id);
       switch (response.userType) {
         case "Admin":
           navigateTo("/admin");
@@ -33,9 +34,12 @@ const SignIn = () => {
           break;
       }
     }
+    setSubmitted(false);
   };
   useEffect(() => {
-    getUsers();
+    if (submitted) {
+      getUsers();
+    }
   }, [submitted]);
 
   return (

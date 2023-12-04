@@ -2,19 +2,21 @@ import { useState } from "react";
 import { addAdminRoom } from "../../utilities/fetch";
 import DisplayRooms from "../display_rooms";
 import "./index.css";
+// import { useSelector } from "react-redux";
 
 const AddRoom = () => {
   const [roomName, setRoomName] = useState("");
-
   const [roomsUpdated, setRoomsUpdated] = useState(0); // State to trigger rerender
+  // const roomReload = useSelector((state) => state.rooms.reload);
 
-  const validRoomStatusValues = ["Free", "Used"];
-
+  const reloadParent = () => {
+    // console.log(roomReload);
+    setRoomsUpdated(roomsUpdated + 1); // Trigger component rerender
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (roomName != "") {
       await addAdminRoom(roomName, "Free");
-
       setRoomName(""); // Reset input fields
       setRoomsUpdated(roomsUpdated + 1); // Trigger component rerender
     }
@@ -37,8 +39,16 @@ const AddRoom = () => {
         <button type="submit">Add Room</button>
       </form>
       <div className="rooms">
-        <DisplayRooms key={`Free-${roomsUpdated}`} status={"Free"} />
-        <DisplayRooms key={`Used-${roomsUpdated}`} status={"Used"} />
+        <DisplayRooms
+          key={`Free-${roomsUpdated}`}
+          status={"Free"}
+          reload={reloadParent}
+        />
+        <DisplayRooms
+          key={`Used-${roomsUpdated}`}
+          status={"Used"}
+          reload={reloadParent}
+        />
       </div>
     </div>
   );
