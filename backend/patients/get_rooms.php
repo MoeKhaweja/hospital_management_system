@@ -1,7 +1,9 @@
 <?php
-include("../connection.php"); // Include your database connection file
+include("../connection.php"); 
+include("../auth/jwt_decode.php"); 
 
-// Query to get all rooms
+authenticateJWT();
+
 $query=$conn->prepare('select patient_id, room_number from patients');
 $query->execute();
 $array=$query->get_result();
@@ -11,6 +13,6 @@ while($rooms=$array->fetch_assoc()){
     $response[]=$rooms;
 }
 echo json_encode($response);
-// Close the database connection
+
 $conn->close();
 ?>

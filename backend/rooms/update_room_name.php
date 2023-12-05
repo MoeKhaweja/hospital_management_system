@@ -1,14 +1,16 @@
 <?php
-include("../connection.php"); // Include your database connection file
+include("../connection.php");
+include("../auth/jwt_decode.php"); 
+
+authenticateJWT();
+
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Check if data is received and set variables
 if (isset($data['room_id'],$data['room_name'])) {
     $room_id = $data['room_id'];
     $room_name = $data['room_name'];
 
-   
-}
+   }
 else{
     $room_id = $_POST['room_id'];
     $room_name = $_POST['room_name'];

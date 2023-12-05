@@ -1,9 +1,9 @@
 <?php
-include("../connection.php"); // Include your database connection file
-// Receive JSON data from the request body
+include("../connection.php"); 
+include("../auth/jwt_generate.php"); 
+
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Check if data is received and set variables
 if (isset($data['email'], $data['password'])) {
     $email = $data['email'];
     $password = $data['password'];
@@ -23,6 +23,10 @@ if($num_rows== 0){
     echo json_encode($response);
 } else {
     if(password_verify($password,$hashed_password)){
+        $token = generateToken($id,$hashed_password);
+
+        $response['token']= $token;
+        
         $response['status']= 'logged in';
         $response['id']=$id;
         $response['name']=$name;

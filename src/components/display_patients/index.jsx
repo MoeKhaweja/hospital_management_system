@@ -137,7 +137,17 @@ function DisplayPatients() {
             <h2>Medical Records</h2>
             {selectedPatient.medications.map((medication) => (
               <div key={medication.medication_id}>
-                Date: {medication.date}, Diagnosis: {medication.diagnosis}
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Date:</td>
+                      <td>{medication.date.substring(0, 10)}</td>
+
+                      <td>Diagnosis:</td>
+                      <td>{medication.diagnosis}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             ))}
             <button onClick={() => handleToggleMedicalRecords(selectedPatient)}>

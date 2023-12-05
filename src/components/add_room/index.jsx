@@ -25,6 +25,12 @@ const AddRoom = () => {
   return (
     <div>
       <h2>Add Room</h2>
+      <p>
+        an admin can add rooms, a room has 2 states, free or used, emergency
+        room is also a room, assuming a room can only be used by 1 patient,
+        admin can assign patients to rooms by editing the patients table room
+        column ( after editing refresh page to rerender with correct values)
+      </p>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="roomID">Room Name:</label>

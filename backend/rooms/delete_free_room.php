@@ -1,8 +1,11 @@
 <?php
-include("../connection.php"); // Include your database connection file
+include("../connection.php"); 
+include("../auth/jwt_decode.php"); 
+
+authenticateJWT();
+
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Check if data is received and set variables
 if (isset($data['room_id'])) {
     $room_id = $data['room_id'];
       
@@ -13,7 +16,7 @@ else{
 }
 $roomStatus="Free";
 $room_patient=null;
-// Query to get all users
+
 $query = $conn->prepare('DELETE FROM rooms WHERE room_id =?');
 $query->bind_param("i",  $room_id);
 

@@ -1,15 +1,14 @@
 <?php
 include("../connection.php"); // Include your database connection file
-$data = json_decode(file_get_contents("php://input"), true);
+include("../auth/jwt_decode.php"); 
 
-// Check if data is received and set variables
+authenticateJWT();
+
+$data = json_decode(file_get_contents("php://input"), true);
 if (isset($data['userType'])) {
     $userType = $data['userType'];
-    
-}
-else{
-    $userType=$_POST['userType'];
-}
+    }
+
 if($userType=="Patient"){
 // Query to get all users
 $query=$conn->prepare('SELECT u.id, u.name, u.email, u.gender, u.phone, p.room_number

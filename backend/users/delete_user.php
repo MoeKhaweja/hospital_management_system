@@ -1,8 +1,11 @@
 <?php
-include("../connection.php"); // Include your database connection file
+include("../connection.php"); 
+include("../auth/jwt_decode.php"); 
+
+authenticateJWT();
+
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Check if data is received and set variables
 if (isset($data['id'])) {
     $id = $data['id'];
       
@@ -11,7 +14,7 @@ else{
     $id=$_POST['id'];
        
 }
-// Query to get all users
+
 $query = $conn->prepare('DELETE FROM users where id=?');
                       
 $query->bind_param("i",$id);

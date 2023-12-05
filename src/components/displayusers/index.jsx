@@ -1,26 +1,36 @@
 import { useEffect, useState } from "react";
 import {
   deleteUser,
+  getAdminRooms,
   updatePatientRoom,
   updateUser,
 } from "../../utilities/fetch";
 
+// eslint-disable-next-line react/prop-types
 const DisplayUsers = ({ users, getAllUsers, usersType }) => {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [gender, setGender] = useState();
   const [phone, setPhone] = useState();
   const [roomNumber, setRoomNumber] = useState();
+  const [rooms, setRooms] = useState([]);
 
   const [editableRowId, setEditableRowId] = useState(null);
-  const [isFirstRender, setIsFirstRender] = useState(true);
-
   const handleEdit = (user, userId) => {
     setName(user.name);
     setEmail(user.email);
     setGender(user.gender);
     setPhone(user.phone);
     setEditableRowId(userId);
+  };
+
+  useEffect(() => {
+    fetchRooms();
+  }, []);
+
+  const fetchRooms = async () => {
+    const r = await getAdminRooms("Free");
+    setRooms(r);
   };
 
   const handleSave = async (userId) => {
@@ -33,22 +43,10 @@ const DisplayUsers = ({ users, getAllUsers, usersType }) => {
     getAllUsers();
   };
   const handleDelete = async (userId) => {
-    await deleteUser(userId); // Assuming deleteUser is asynchronous
+    await deleteUser(userId);
     console.log(`Deleting user with ID: ${userId}`);
-    getAllUsers(); // Trigger update after deletion
+    getAllUsers();
   };
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      handleSave();
-    }
-  }, [name, email, gender, phone]);
-
-  useEffect(() => {
-    if (!isFirstRender) {
-      handleDelete();
-    }
-  }, [users]); // Trigger delete effect when users change
 
   return (
     <table>
@@ -76,100 +74,112 @@ const DisplayUsers = ({ users, getAllUsers, usersType }) => {
       </thead>
 
       <tbody>
-        {users.map((user) => (
-          <tr key={user.id}>
-            <td>{user.id}</td>
-            <td>
-              {editableRowId === user.id ? (
-                <input
-                  type="text"
-                  defaultValue={user.name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              ) : (
-                user.name
-              )}
-            </td>
-            <td>
-              {editableRowId === user.id ? (
-                <input
-                  type="text"
-                  defaultValue={user.email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              ) : (
-                user.email
-              )}
-            </td>
-            <td>
-              {editableRowId === user.id ? (
-                <>
-                  <label>
-                    <input
-                      type="radio"
-                      value="Male"
-                      onChange={(e) => setGender(e.target.value)}
-                      checked={gender === "Male"} // Check if gender is 'Male'
-                    />
-                    Male
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      value="Female"
-                      onChange={(e) => setGender(e.target.value)}
-                      checked={gender === "Female"} // Check if gender is 'Female'
-                    />
-                    Female
-                  </label>
-                </>
-              ) : (
-                user.gender
-              )}
-            </td>
-            <td>
-              {editableRowId === user.id ? (
-                <input
-                  type="text"
-                  defaultValue={user.phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              ) : (
-                user.phone
-              )}
-            </td>
-            {usersType != "Patient" ? (
-              <></>
-            ) : (
+        {
+          // eslint-disable-next-line react/prop-types
+          users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
               <td>
                 {editableRowId === user.id ? (
                   <input
                     type="text"
-                    defaultValue={user.room_number}
-                    onChange={(e) => setRoomNumber(e.target.value)}
+                    defaultValue={user.name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 ) : (
-                  user.room_number
+                  user.name
                 )}
               </td>
-            )}
-            <td>
-              {editableRowId === user.id ? (
-                <>
-                  <button onClick={() => handleSave(user.id)}>Save</button>
-                  <button onClick={() => setEditableRowId(null)}>Cancel</button>
-                </>
+              <td>
+                {editableRowId === user.id ? (
+                  <input
+                    type="text"
+                    defaultValue={user.email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                ) : (
+                  user.email
+                )}
+              </td>
+              <td>
+                {editableRowId === user.id ? (
+                  <>
+                    <label>
+                      <input
+                        type="radio"
+                        value="Male"
+                        onChange={(e) => setGender(e.target.value)}
+                        checked={gender === "Male"} // Check if gender is 'Male'
+                      />
+                      Male
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        value="Female"
+                        onChange={(e) => setGender(e.target.value)}
+                        checked={gender === "Female"} // Check if gender is 'Female'
+                      />
+                      Female
+                    </label>
+                  </>
+                ) : (
+                  user.gender
+                )}
+              </td>
+              <td>
+                {editableRowId === user.id ? (
+                  <input
+                    type="text"
+                    defaultValue={user.phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                ) : (
+                  user.phone
+                )}
+              </td>
+              {usersType != "Patient" ? (
+                <></>
               ) : (
-                <>
-                  <button onClick={() => handleEdit(user, user.id)}>
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(user.id)}>Delete</button>
-                </>
+                <td>
+                  {editableRowId === user.id ? (
+                    <select
+                      name="free_room"
+                      onChange={(e) => setRoomNumber(e.target.value)}
+                    >
+                      {rooms.map((room) => (
+                        <option key={room.room_id} value={room.room_id}>
+                          {room.room_id}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    user.room_number
+                  )}
+                </td>
               )}
-            </td>
-          </tr>
-        ))}
+              <td>
+                {editableRowId === user.id ? (
+                  <>
+                    <button onClick={() => handleSave(user.id)}>Save</button>
+                    <button onClick={() => setEditableRowId(null)}>
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => handleEdit(user, user.id)}>
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(user.id)}>
+                      Delete
+                    </button>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))
+        }
       </tbody>
     </table>
   );

@@ -1,30 +1,25 @@
 import { useState } from "react";
+import DisplayPatientInfo from "../../components/display_personal_record";
+import MyCalendar from "../../components/calendar";
 
 function Patient() {
-  const [medicalHistory, setMedicalHistory] = useState([]);
-  const [appointments, setAppointments] = useState([]);
+  const [activeTab, setActiveTab] = useState("patientInfo");
 
-  // View personal medical history and appointments
-  const viewMedicalHistory = () => {
-    /*...*/
-  };
-  const viewAppointments = () => {
-    /*...*/
-  };
-
-  // Manage upcoming appointments
-  const bookAppointment = (appointment) => {
-    /*...*/
-  };
-  const cancelAppointment = (appointment) => {
-    /*...*/
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
   };
 
   return (
     <div>
-      {/* UI for viewing medical history and appointments, and managing appointments */}
+      <div>
+        <button onClick={() => handleTabChange("patientInfo")}>
+          Patient Info
+        </button>
+        <button onClick={() => handleTabChange("calendar")}>Calendar</button>
+      </div>
+      {activeTab === "patientInfo" && <DisplayPatientInfo></DisplayPatientInfo>}
+      {activeTab === "calendar" && <MyCalendar user={"Patient"}></MyCalendar>}
     </div>
   );
 }
-
 export default Patient;

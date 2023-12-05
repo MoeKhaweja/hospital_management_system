@@ -1,15 +1,9 @@
 <?php
 // FILEPATH: /C:/xampp/htdocs/hospital_management_system/backend/signup.php
-include("../connection.php"); // Include your database connection file
-include("../key.php");
-require_once('../vendor/autoload.php'); // Include the JWT library
+include("../connection.php"); 
 
-use Firebase\JWT\JWT;
-
-// Receive JSON data from the request body
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Check if data is received and set variables
 if (isset($data['email'], $data['password'], $data['userType'], $data['name'], $data['gender'], $data['phoneNumber'])) {
     $email = $data['email'];
     $password = $data['password'];
@@ -26,25 +20,6 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssssss", $email, $hashedPassword, $userType, $name, $gender, $phoneNumber);
 
 if ($stmt->execute()) {
-    // User signed up successfully, generate a JWT token
-    $tokenId    = base64_encode(random_bytes(32));
-    $issuedAt   = time();
-    $notBefore  = $issuedAt;  // Token can't be used before this time
-    $expire     = $notBefore + 3600; // Token will expire in 1 hour (adjust as needed)
-
-    $token = [
-        'iat'  => $issuedAt,         // Issued at: timestamp
-        'jti'  => $tokenId,          // JWT ID
-        'nbf'  => $notBefore,        // Not before
-        'exp'  => $expire,           // Expiration time
-        'data' => [
-            'email' => $email,      // Add user data to the token
-            'role' => $userType     // Include user role (userType) in the token
-        ]
-    ];
-
-    $jwt = JWT::encode($token, $key, 'HS256'); // Specify the algorithm here (HS256 is used here)
-    echo json_encode(['token' => $jwt]); // Return the token to the client
 } else {
     echo "Error signing up user: " . $stmt->error;
 }
@@ -52,7 +27,6 @@ if ($stmt->execute()) {
 
 
 if ($userType == "Patient") {
-    // Assuming patients table has a foreign key referring to users table's id
     $sqlPatient = "INSERT INTO patients (patient_id) SELECT id FROM users WHERE email=?";
     $stmtPatient = $conn->prepare($sqlPatient);
     $stmtPatient->bind_param("s", $email);
@@ -67,8 +41,7 @@ if ($userType == "Patient") {
 }
 
 if ($userType == "Doctor") {
-    // Assuming patients table has a foreign key referring to users table's id
-    $sqlDoctor = "INSERT INTO doctors (doctor_id) SELECT id FROM users WHERE email=?";
+     $sqlDoctor = "INSERT INTO doctors (doctor_id) SELECT id FROM users WHERE email=?";
     $stmtDoctor = $conn->prepare($sqlDoctor);
     $stmtDoctor->bind_param("s", $email);
 

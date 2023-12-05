@@ -1,5 +1,8 @@
 <?php
 include("../connection.php");
+include("../auth/jwt_decode.php"); 
+
+authenticateJWT();
 
 $sql = "
     SELECT 
@@ -19,7 +22,6 @@ $sql = "
         p.patient_id;
 ";
 
-// Execute the query
 $query = $conn->prepare($sql);
 $query->execute();
 $array = $query->get_result();
@@ -29,13 +31,11 @@ while ($rooms = $array->fetch_assoc()) {
     $response[] = $rooms;
 }
 
-// Decode the medications string to an array
 foreach ($response as &$row) {
     $row['medications'] = json_decode($row['medications'], true);
 }
 
 echo json_encode($response);
 
-// Close the database connection
 $conn->close();
 ?>

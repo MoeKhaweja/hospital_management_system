@@ -1,39 +1,26 @@
 import axios from "axios";
 
 const API_URL = "http://localhost/hospital_management_system/backend";
+let localToken = localStorage.getItem("token");
 
-// const post = async ({ route, body }) => {
-//   try {
-//     const response = await axios.post(`${API_URL}${route}.php`, body);
+const fetchApi = async (url, method, data = null) => {
+  try {
+    const response = await axios({
+      method,
+      url: `${API_URL}/${url}`,
+      data,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localToken}`,
+      },
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
 
-//     return response.data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// export const signUpUser = async (
-//   email,
-//   password,
-//   userType,
-//   name,
-//   gender,
-//   phoneNumber
-// ) => {
-//   post({
-//     route: "/sign_up/signup",
-//     body: {
-//       email,
-//       password,
-//       userType,
-//       name,
-//       gender,
-//       phoneNumber,
-//     },
-//   });
-// };
-
-// Function to sign up with username, password, and user role
 export const signUpUser = async (
   email,
   password,
@@ -41,200 +28,190 @@ export const signUpUser = async (
   name,
   gender,
   phoneNumber
-) => {
-  try {
-    const response = await axios.post(`${API_URL}/sign_up/signup.php`, {
-      email,
-      password,
-      userType,
-      name,
-      gender,
-      phoneNumber,
-    });
-    const token = response.data.token; // Get the token from the response
-    // Store the token securely (e.g., in local storage)
-    localStorage.setItem("token", token); // Store in local storage
-    console.log(response.data);
-    return token; // Return the token for further handling if needed
-  } catch (error) {
-    console.log("error");
-    throw new Error(error.response.data.message);
-  }
-};
-
-// Function to sign in with username and password
+) =>
+  fetchApi("sign_up/signup.php", "post", {
+    email,
+    password,
+    userType,
+    name,
+    gender,
+    phoneNumber,
+  });
 
 export const signInUser = async (email, password) => {
-  try {
-    const response = await axios.post(`${API_URL}/sign_up/signin.php`, {
-      email,
-      password,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("sign_up/signin.php", "post", {
+    email,
+    password,
+  });
+  const token = response.data.token;
+  localToken = token;
+  localStorage.setItem("token", token);
+  console.log(response.data);
+  return response.data;
 };
 
 export const getUsers = async (userType) => {
-  try {
-    const response = await axios.post(`${API_URL}/users/get_users.php`, {
-      userType,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("users/get_users.php", "post", {
+    userType,
+  });
+  return response.data;
 };
 
 export const updateUser = async (id, email, gender, name, phoneNumber) => {
-  try {
-    const response = await axios.post(`${API_URL}/users/update_user.php`, {
-      id,
-      email,
-      gender,
-      name,
-      phoneNumber,
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("users/update_user.php", "post", {
+    id,
+    email,
+    gender,
+    name,
+    phoneNumber,
+  });
+  return response.data;
 };
 
 export const deleteUser = async (id) => {
-  try {
-    const response = await axios.post(`${API_URL}/users/delete_user.php`, {
-      id,
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("users/delete_user.php", "post", {
+    id,
+  });
+  return response.data;
 };
 
 export const addAdminRoom = async (room_name, room_status) => {
-  try {
-    const response = await axios.post(`${API_URL}/rooms/add_room.php`, {
-      room_name,
-      room_status,
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("rooms/add_room.php", "post", {
+    room_name,
+    room_status,
+  });
+  return response.data;
 };
 
 export const getAdminRooms = async (room_status) => {
-  try {
-    const response = await axios.post(`${API_URL}/rooms/get_rooms.php`, {
-      room_status,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("rooms/get_rooms.php", "post", {
+    room_status,
+  });
+  return response.data;
 };
 
 export const deleteAdminRooms = async (room_id) => {
-  try {
-    const response = await axios.post(`${API_URL}/rooms/delete_room.php`, {
-      room_id,
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("rooms/delete_room.php", "post", {
+    room_id,
+  });
+  return response.data;
 };
+
 export const deleteFreeRoom = async (room_id) => {
-  try {
-    const response = await axios.post(`${API_URL}/rooms/delete_free_room.php`, {
-      room_id,
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("rooms/delete_free_room.php", "post", {
+    room_id,
+  });
+  return response.data;
 };
 
 export const updatePatientRoom = async (room_number, patient_id) => {
-  try {
-    const response = await axios.post(`${API_URL}/patients/update_room.php`, {
-      room_number,
-      patient_id,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("patients/update_room.php", "post", {
+    room_number,
+    patient_id,
+  });
+  return response.data;
 };
+
 export const updateRoomName = async (room_id, room_name) => {
-  try {
-    const response = await axios.post(`${API_URL}/rooms/update_room_name.php`, {
-      room_id,
-      room_name,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("rooms/update_room_name.php", "post", {
+    room_id,
+    room_name,
+  });
+  return response.data;
 };
 
 export const getPatients = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/doctors/get_patients.php`, {});
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("doctors/get_patients.php", "get");
+  return response.data;
 };
 
 export const prescribeMedication = async (patient_id, diagnosis) => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/doctors/assign_medications.php`,
-      {
-        patient_id,
-        diagnosis,
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("doctors/assign_medications.php", "post", {
+    patient_id,
+    diagnosis,
+  });
+  return response.data;
 };
 
 export const assignToPatient = async (patient_id, assigned_dr) => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/doctors/assign_to_patient.php`,
-      {
-        patient_id,
-        assigned_dr,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("doctors/assign_to_patient.php", "post", {
+    patient_id,
+    assigned_dr,
+  });
+  return response.data;
 };
 
 export const unAssignToPatient = async (patient_id) => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/doctors/unassign_to_patient.php`,
-      {
-        patient_id,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data.message);
-  }
+  const response = await fetchApi("doctors/unassign_to_patient.php", "post", {
+    patient_id,
+  });
+  return response.data;
+};
+
+export const addAppointment = async (
+  doctor_id,
+  appointment_date,
+  appointment_start_time,
+  appointment_end_time
+) => {
+  const response = await fetchApi("appointments/add_appointment.php", "post", {
+    doctor_id,
+    appointment_date,
+    appointment_start_time,
+    appointment_end_time,
+  });
+  return response.data;
+};
+
+export const getAppointments = async () => {
+  const response = await fetchApi("appointments/get_appointments.php", "get");
+  return response.data;
+};
+
+export const updateAppointment = async (id, appointment_status) => {
+  const response = await fetchApi(
+    "appointments/update_appointment.php",
+    "post",
+    {
+      id,
+      appointment_status,
+    }
+  );
+  return response.data;
+};
+
+export const cancelAppointment = async (id, appointment_status) => {
+  const response = await fetchApi(
+    "appointments/cancel_appointment.php",
+    "post",
+    {
+      id,
+      appointment_status,
+    }
+  );
+  return response.data;
+};
+
+export const requestAppointmentPatient = async (
+  id,
+  appointment_status,
+  patient_id
+) => {
+  const response = await fetchApi(
+    "appointments/request_appointment.php",
+    "post",
+    {
+      id,
+      appointment_status,
+      patient_id,
+    }
+  );
+  console.log(response);
+  return response.data;
+};
+
+export const test = async () => {
+  const response = await fetchApi("auth/jwt_decode.php", "post", {});
+  console.log(response);
+  return response.data;
 };

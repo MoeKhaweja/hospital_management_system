@@ -9,6 +9,7 @@ import "./index.css";
 // import { useDispatch } from "react-redux";
 // import { roomActions } from "../../store/rooms_slice";
 
+// eslint-disable-next-line react/prop-types
 const DisplayRooms = ({ status, reload }) => {
   const [roomName, setRoomName] = useState("");
   const [editableRowId, setEditableRowId] = useState(null);
